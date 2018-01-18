@@ -68,6 +68,7 @@ setTimeout = function(what, delay) {
 // Helper functions
 
 checkTimeouts = function() {
+	var untriggered = []
 	if(!timeouts.length)
 		return;
 
@@ -77,8 +78,10 @@ checkTimeouts = function() {
 		if(to.called)
 			continue;
 
-		if(to.start + to.delay > Date.now())
+		if(to.start + to.delay > Date.now()) {
+			untriggered.push(to);
 			continue;
+		}
 
 		// Execute timeout callback
 		to.what.apply(null, to.args);
@@ -86,6 +89,8 @@ checkTimeouts = function() {
 		to.called = true;
 		toTrigger--;
 	}
+	
+	timeouts = untriggered;
 }
 
 parseFunction = function(line) {
